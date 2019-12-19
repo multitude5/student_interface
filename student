@@ -1,0 +1,72 @@
+#include<stdio.h>
+#include<string.h>
+#include<conio.h>
+int main()
+{
+    char roll_no[15] = "sp19-bcs-003";
+    char roll_no_f[25];
+    char subject_f[60];
+    int t_students,t_subjects;
+    FILE *ptr;
+    ptr = fopen("data.txt","r+");
+    if ( ptr == NULL)
+    {
+        printf("ERROR");
+    }
+    fscanf(ptr,"%d %d",&t_students,&t_subjects);
+    rewind(ptr);
+    int position = 39;
+    int subject_position= 60;
+    int possibilities = t_students * t_subjects;
+    int i = 0,z = 1,choice;
+
+    printf("Enter the subject no you want to check : \n");
+
+    while (i <= possibilities)
+    {
+        position += 281 ;
+        fseek(ptr,position,0);
+        fgets(roll_no_f,13,ptr);
+        i++;
+        if (!strcmp(roll_no,roll_no_f))
+        {
+            fseek(ptr,8,1);
+            fgets(subject_f,40,ptr);
+            printf("%d)%s\n",z,subject_f);
+            z++;
+        }
+    }
+    scanf("%d",&choice);
+    
+    /* to get roll no in int */
+    char *token = strtok(roll_no,"-");
+    token = strtok(NULL,"-");
+    token = strtok(NULL,"-");
+
+    int roll_no_tok = atoi(token);
+    printf("%d",roll_no_tok);
+
+    int line = t_students*(choice-1)+roll_no_tok;
+
+    /* Position of student in file */
+    int position_3 = line * 281 ;
+    rewind(ptr);
+    fseek(ptr,position_3,0);
+    printf("asas %d asas",position_3);
+
+
+    /* to get quiz data from file */
+
+    int position_quiz = position_3;
+    position_quiz += 13;
+    char quiz[5];
+    for(int o = 0 ; o < 3 ; o++)
+    {
+        fseek(ptr,position_quiz,0);
+        fgets(quiz,3,ptr);
+        position_quiz += 6;
+        puts(quiz);
+
+    }
+
+}
