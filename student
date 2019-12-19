@@ -58,7 +58,7 @@ int main()
     /* to get quiz data from file */
 
     int position_quiz = position_3;
-    position_quiz += 13;
+    position_quiz += 131;
     char quiz[5];
     for(int o = 0 ; o < 3 ; o++)
     {
