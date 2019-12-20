@@ -3,7 +3,7 @@
 #include<conio.h>
 int main()
 {
-    char roll_no[15] = "sp19-bcs-003";
+    char roll_no[15] = "sp19-bcs-001";
     char roll_no_f[25];
     char subject_f[60];
     int t_students,t_subjects;
@@ -37,36 +37,62 @@ int main()
         }
     }
     scanf("%d",&choice);
-    
+
     /* to get roll no in int */
     char *token = strtok(roll_no,"-");
     token = strtok(NULL,"-");
     token = strtok(NULL,"-");
 
     int roll_no_tok = atoi(token);
-    printf("%d",roll_no_tok);
 
+    /* Line were t*/
     int line = t_students*(choice-1)+roll_no_tok;
 
     /* Position of student in file */
     int position_3 = line * 281 ;
     rewind(ptr);
     fseek(ptr,position_3,0);
-    printf("asas %d asas",position_3);
-
 
     /* to get quiz data from file */
 
-    int position_quiz = position_3;
-    position_quiz += 131;
+    int position_quiz = position_3 + 130;
     char quiz[5];
-    for(int o = 0 ; o < 3 ; o++)
+    for(int outer = 1 ; outer <= 4 ; outer++)
     {
         fseek(ptr,position_quiz,0);
         fgets(quiz,3,ptr);
-        position_quiz += 6;
-        puts(quiz);
-
+        position_quiz += 8;
+        printf("quiz%d :%s\n",outer,quiz);
     }
+
+    /* To print assignments data */
+
+    int position_assignment = position_3 + 162 ;
+    char assignment[5];
+    for ( int inner = 1 ; inner <= 4 ; inner++ )
+    {
+        fseek(ptr,position_assignment,0);
+        fgets(assignment,3,ptr);
+        position_assignment += 8;
+        printf("Assignment%d :%s\n",inner,assignment);
+    }
+
+    /* To print sessionals and terminals dara */
+
+    int position_sessionals = position_3 + 194 ;
+    char sessional[5];
+    for ( int s = 1 ; s <= 3 ; s++ )
+    {
+        fseek(ptr,position_sessionals,0);
+        fgets(sessional,3,ptr);
+        position_sessionals += 8;
+        if ( s == 3 )
+        {
+            printf("Terminal marks : %s\n",sessional);
+            break;
+        }
+        printf("Sessiona%d Marks : %s\n",s,sessional);
+    }
+
 
 }
