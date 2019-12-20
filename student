@@ -1,31 +1,45 @@
 #include<stdio.h>
 #include<string.h>
 #include<conio.h>
+void subject_student_enroll_f (FILE *ptr,char roll_no[]);
+int student_roll_no_conversion_f (char roll_no[]);
+int position_f(int t_students,int roll_no_tok,int choice);
+void display_quiz_f(FILE *ptr, int position);
+void display_assignments_f(FILE *ptr, int position);
+void display_attendence_f (FILE *ptr , int position);
 int main()
 {
-    char roll_no[15] = "sp19-bcs-001";
-    char roll_no_f[25];
-    char subject_f[60];
-    int t_students,t_subjects;
+    char roll_no[15];
+    printf("Enter your roll no(****-***-***) :");
+    gets(roll_no);
     FILE *ptr;
     ptr = fopen("data.txt","r+");
     if ( ptr == NULL)
     {
         printf("ERROR");
     }
-    fscanf(ptr,"%d %d",&t_students,&t_subjects);
-    rewind(ptr);
-    int position = 39;
-    int subject_position= 60;
-    int possibilities = t_students * t_subjects;
-    int i = 0,z = 1,choice;
+    subject_student_enroll_f(ptr,roll_no);
+}
+void subject_student_enroll_f (FILE *ptr,char roll_no[])
+{
+    int t_students,t_subjects;
+    char roll_no_f[25];
+    char subject_f[60];
+    int position_student = 39;
+    int roll_no_tok;
+    int position;
 
-    printf("Enter the subject no you want to check : \n");
+
+    fscanf( ptr,"%d %d",&t_students,&t_subjects );
+    int possibilities = t_students * t_subjects;
+
+
+    int i = 0,z = 1,choice;
 
     while (i <= possibilities)
     {
-        position += 281 ;
-        fseek(ptr,position,0);
+        position_student += 281 ;
+        fseek(ptr,position_student,0);
         fgets(roll_no_f,13,ptr);
         i++;
         if (!strcmp(roll_no,roll_no_f))
@@ -36,56 +50,72 @@ int main()
             z++;
         }
     }
+    printf("Enter the subject no you want to check : ");
     scanf("%d",&choice);
 
-    /* to get roll no in int */
+    roll_no_tok = student_roll_no_conversion_f (roll_no);
+    position = position_f(t_students,roll_no_tok,choice);
+    display_quiz_f(ptr,position);
+    display_assignments_f(ptr,position);
+    display_sessional_f (ptr , position);
+    display_attendence_f(ptr, position);
+
+}
+int student_roll_no_conversion_f (char roll_no[])
+{
+     /* to get roll no in int */
     char *token = strtok(roll_no,"-");
     token = strtok(NULL,"-");
     token = strtok(NULL,"-");
 
     int roll_no_tok = atoi(token);
-
-    /* Line were t*/
+    return (roll_no_tok);
+}
+int position_f(int t_students,int roll_no_tok,int choice)
+{
     int line = t_students*(choice-1)+roll_no_tok;
 
     /* Position of student in file */
-    int position_3 = line * 281 ;
-    rewind(ptr);
-    fseek(ptr,position_3,0);
+    int position = line * 281 ;
+    return (position);
+}
+void display_quiz_f(FILE *ptr, int position)
+{
+      /* to get quiz data from file */
 
-    /* to get quiz data from file */
-
-    int position_quiz = position_3 + 130;
+    int position_quiz = position + 176;
     char quiz[5];
-    for(int outer = 1 ; outer <= 4 ; outer++)
+    for(int i = 1 ; i <= 4 ; i++)
     {
         fseek(ptr,position_quiz,0);
         fgets(quiz,3,ptr);
-        position_quiz += 8;
-        printf("quiz%d :%s\n",outer,quiz);
+        printf("quiz%d :%s\n",i,quiz);
     }
-
+}
+void display_assignments_f(FILE *ptr, int position)
+{
     /* To print assignments data */
 
-    int position_assignment = position_3 + 162 ;
+    int position_assignment = position + 188 ;
     char assignment[5];
     for ( int inner = 1 ; inner <= 4 ; inner++ )
     {
         fseek(ptr,position_assignment,0);
         fgets(assignment,3,ptr);
-        position_assignment += 8;
         printf("Assignment%d :%s\n",inner,assignment);
     }
 
-    /* To print sessionals and terminals dara */
+}
+void display_sessional_f (FILE *ptr , int position)
+{
+     /* To print sessionals and terminals dara */
 
-    int position_sessionals = position_3 + 194 ;
+    int position_sessionals = position + 200 ;
     char sessional[5];
     for ( int s = 1 ; s <= 3 ; s++ )
     {
         fseek(ptr,position_sessionals,0);
         fgets(sessional,3,ptr);
-        position_sessionals += 8;
         if ( s == 3 )
         {
             printf("Terminal marks : %s\n",sessional);
@@ -94,5 +124,34 @@ int main()
         printf("Sessiona%d Marks : %s\n",s,sessional);
     }
 
+}
+void display_attendence_f (FILE *ptr , int position)
+{
+    /* To count the presents and absents of student */
 
+    int position_attendence = position + 220 ;
+    rewind(ptr);
+    int t_attendence,g,g1 ;
+    fscanf(ptr,"%d %d %d",&g,&g1,&t_attendence);
+
+    char attendence[3];
+    int absents = 0 , presents = 0;
+    for ( int a = 0 ; a <= 60 ; a++ )
+    {
+        fseek(ptr,position_attendence,0);
+        fgets(attendence,2,ptr);
+        position_attendence += 1;
+        if (!strcmp(attendence,"p") || !strcasecmp(attendence,"P"))
+        {
+            presents++;
+        }
+        else if (!strcmp(attendence,"a") || !strcmp(attendence,"A"))
+        {
+            absents++;
+        }
+    }
+    t_attendence = (presents + absents);
+    printf("total : %d",t_attendence);
+    printf("Presents : %d",presents);
+    printf("Absents :  %d",absents);
 }
