@@ -2,10 +2,12 @@
 #include<string.h>
 #include<conio.h>
 void subject_student_enroll_f (FILE *ptr,char roll_no[]);
+void teacher_name_tok_f (char teacher_name[]);
 int student_roll_no_conversion_f (char roll_no[]);
 int position_f(int t_students,int roll_no_tok,int choice);
 void display_quiz_f(FILE *ptr, int position);
 void display_assignments_f(FILE *ptr, int position);
+void display_sessional_f (FILE *ptr , int position);
 void display_attendence_f (FILE *ptr , int position);
 int main()
 {
@@ -34,19 +36,39 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
     int possibilities = t_students * t_subjects;
 
 
-    int i = 0,z = 1,choice;
-
+    int i = 0,z = 1,l = 1,choice;
+    char teacher_name[30];
+    char credit_hours[5];
+    char student_name[80];
     while (i <= possibilities)
     {
+
         position_student += 281 ;
+
+        fseek(ptr,position_student-39,0);
+        fgets(teacher_name,25,ptr);
+
+        fseek(ptr,position_student+134,0);
+        fgets(credit_hours,3,ptr);
+
+        fseek(ptr,position_student+61,0);
+        fgets(student_name,75,ptr);
+
         fseek(ptr,position_student,0);
         fgets(roll_no_f,13,ptr);
         i++;
         if (!strcmp(roll_no,roll_no_f))
         {
+            if( l == 1 )
+            {
+                printf("    Welcome %s\n",student_name);
+                l++;
+            }
             fseek(ptr,8,1);
             fgets(subject_f,40,ptr);
             printf("%d)%s\n",z,subject_f);
+            teacher_name_tok_f(teacher_name);
+            printf("Credit hours : %s\n",credit_hours);
             z++;
         }
     }
@@ -60,6 +82,11 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
     display_sessional_f (ptr , position);
     display_attendence_f(ptr, position);
 
+}
+void teacher_name_tok_f (char teacher_name[])
+{
+    char *token = strtok(teacher_name,"@");
+    printf("Teacher Name : %s\n",teacher_name);
 }
 int student_roll_no_conversion_f (char roll_no[])
 {
