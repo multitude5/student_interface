@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<conio.h>
+#include<windows.h>
 void subject_student_enroll_f (FILE *ptr,char roll_no[]);
 void teacher_name_tok_f (char teacher_name[]);
 int student_roll_no_conversion_f (char roll_no[]);
@@ -9,11 +10,16 @@ void display_quiz_f(FILE *ptr, int position);
 void display_assignments_f(FILE *ptr, int position);
 void display_sessional_f (FILE *ptr , int position);
 void display_attendence_f (FILE *ptr , int position);
+void printtitle(char *ptrs);
+void gotoxy(int x, int y);
 int main()
 {
     char roll_no[15];
-    printf("Enter your roll no(****-***-***) :");
+    printf("Enter your roll no(****-***-***) \n");
+    printtitle(" ");
+    gotoxy(23,3);
     gets(roll_no);
+    system("cls");
     FILE *ptr;
     ptr = fopen("data.txt","r+");
     if ( ptr == NULL)
@@ -57,21 +63,27 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
         fseek(ptr,position_student,0);
         fgets(roll_no_f,13,ptr);
         i++;
+
         if (!strcmp(roll_no,roll_no_f))
         {
             if( l == 1 )
             {
-                printf("    Welcome %s\n",student_name);
+                printtitle(strupr(student_name));
                 l++;
+                printf("\n\n       SUBJECT                          TEACHER NAME      CREDIT HOUR\n\n");
             }
             fseek(ptr,8,1);
             fgets(subject_f,40,ptr);
-            printf("%d)%s\n",z,subject_f);
+
+            //gotoxy(20,z*5);
+            printf("%d)%-10s",z,subject_f);
             teacher_name_tok_f(teacher_name);
-            printf("Credit hours : %s\n",credit_hours);
+
+            printf("%s\n\n",credit_hours);
             z++;
         }
     }
+    printf("\n_________________________________________________________________\n");
     printf("Enter the subject no you want to check : ");
     scanf("%d",&choice);
 
@@ -86,7 +98,7 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
 void teacher_name_tok_f (char teacher_name[])
 {
     char *token = strtok(teacher_name,"@");
-    printf("Teacher Name : %s\n",teacher_name);
+    printf("%-20s",strupr(teacher_name));
 }
 int student_roll_no_conversion_f (char roll_no[])
 {
@@ -182,3 +194,20 @@ void display_attendence_f (FILE *ptr , int position)
     printf("Presents : %d",presents);
     printf("Absents :  %d",absents);
 }
+
+void printtitle(char *ptrs)
+{
+    printf("                ___________________________               \n\n");
+    printf("                           %s                               \n",ptrs);
+    printf("                ___________________________                 \n");
+}
+
+
+void gotoxy(int x, int y)
+{
+    COORD c;
+    c.X=x;
+    c.Y=y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
+}
+
