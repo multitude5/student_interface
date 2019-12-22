@@ -64,7 +64,7 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
         fgets(roll_no_f,13,ptr);
         i++;
 
-        if (!strcmp(roll_no,roll_no_f))
+        if (!strnicmp(roll_no,roll_no_f,strlen(roll_no)))
         {
             if( l == 1 )
             {
@@ -82,6 +82,11 @@ void subject_student_enroll_f (FILE *ptr,char roll_no[])
             printf("%s\n\n",credit_hours);
             z++;
         }
+    }
+    if (z == 1)
+    {
+        printf("\n\n            Roll no does not exist\n\n");
+        return;
     }
     printf("\n_________________________________________________________________\n");
     printf("Enter the subject no you want to check : ");
@@ -124,11 +129,12 @@ void display_quiz_f(FILE *ptr, int position)
 
     int position_quiz = position + 176;
     char quiz[5];
+    printf("\n\n         Quiz Marks       \n\n");
     for(int i = 1 ; i <= 4 ; i++)
     {
         fseek(ptr,position_quiz,0);
         fgets(quiz,3,ptr);
-        printf("quiz%d :%s\n",i,quiz);
+        printf("Quiz%d : %s\n",i,quiz);
     }
 }
 void display_assignments_f(FILE *ptr, int position)
@@ -137,11 +143,12 @@ void display_assignments_f(FILE *ptr, int position)
 
     int position_assignment = position + 188 ;
     char assignment[5];
+    printf("\n\n      Assignments Marks      \n\n");
     for ( int inner = 1 ; inner <= 4 ; inner++ )
     {
         fseek(ptr,position_assignment,0);
         fgets(assignment,3,ptr);
-        printf("Assignment%d :%s\n",inner,assignment);
+        printf("Assignment%d : %s\n",inner,assignment);
     }
 
 }
@@ -151,16 +158,18 @@ void display_sessional_f (FILE *ptr , int position)
 
     int position_sessionals = position + 200 ;
     char sessional[5];
+    printf("\n\n       Sessional Marks\n");
     for ( int s = 1 ; s <= 3 ; s++ )
     {
         fseek(ptr,position_sessionals,0);
         fgets(sessional,3,ptr);
         if ( s == 3 )
         {
+            printf("\n\n       Terminal Marks \n\n");
             printf("Terminal marks : %s\n",sessional);
             break;
         }
-        printf("Sessiona%d Marks : %s\n",s,sessional);
+        printf("\nSessiona %d Marks : %s\n",s,sessional);
     }
 
 }
@@ -190,9 +199,10 @@ void display_attendence_f (FILE *ptr , int position)
         }
     }
     t_attendence = (presents + absents);
-    printf("total : %d",t_attendence);
-    printf("Presents : %d",presents);
-    printf("Absents :  %d",absents);
+    printf("\n\n        Attendence\n\n");
+    printf("     Total Classes : %d\n",t_attendence);
+    printf("Presents : %d\n",presents);
+    printf("Absents :  %d\n\n",absents);
 }
 
 void printtitle(char *ptrs)
@@ -210,4 +220,3 @@ void gotoxy(int x, int y)
     c.Y=y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
 }
-
